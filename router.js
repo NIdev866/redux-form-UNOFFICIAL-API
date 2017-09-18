@@ -33,14 +33,42 @@ const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
 module.exports = function(app) {
-  app.get('/', /*requireAuth, */function(req, res) {
-    //sending some secret message as test of requireAuth
-  });
-  //app.post('/signin', requireSignin, function(req, res, next) {
-  // Admin has already had their email and password auth'd
-  // We just need to give them a token
-  // res.send({ token: tokenForAdmin(req.Admin) });
-  //})
+
+
+
+  app.get("/create-campaign/fetch-job-sectors", (req, res)=>{
+    let allJobSectorTitles = new Promise((resolve, reject)=>{
+      db.query(`SELECT sector_title FROM job_sectors`, function(err, allJobSectorTitles){
+        if(allJobSectorTitles){
+          resolve(allJobSectorTitles)
+        }
+      })
+    })
+    allJobSectorTitles.then((result)=>{
+      let mapped = result.map((element)=>{
+        return element.sector_title
+      })
+      res.send(mapped)
+    })
+  })
+
+  app.post("/create-campaign/fetch-job-titles", (req, res)=>{
+    let selectedJobSector = req.body
+    res.send(selectedJobSector)
+    let allJobTitles = new Promise((resolve, reject)=>{
+      db.query(`SELECT sector_title FROM job_sectors`, function(err, allJobTitles){
+        if(allJobTitles){
+          resolve(allJobTitles)
+        }
+      })
+    })
+    allJobSectorTitles.then((result)=>{
+      let mapped = result.map((element)=>{
+        return element.sector_title
+      })
+      res.send(mapped)
+    })
+  })
 
 
 
